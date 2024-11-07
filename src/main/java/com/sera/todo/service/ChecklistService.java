@@ -4,6 +4,7 @@ import com.sera.todo.controller.dto.request.ChecklistCreateRequest;
 import com.sera.todo.controller.dto.request.TaskUpdateStatusRequest;
 import com.sera.todo.domain.entity.Checklist;
 import com.sera.todo.domain.entity.Task;
+import com.sera.todo.domain.entity.error.ChecklistNotFoundException;
 import com.sera.todo.domain.entity.error.TaskNotFoundException;
 import com.sera.todo.domain.enumeration.ChecklistCategory;
 import com.sera.todo.domain.repository.ChecklistRepository;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +48,13 @@ public class ChecklistService {
         final Checklist checklist = task.getChecklist();
         checklist.setCompletedPercent(this.calculateCompletedPercent(checklist));
         return task;
+    }
+
+    public Boolean delete(final long checklistId) {
+        final Checklist checklist = this.checklistRepository.findById(checklistId).orElseThrow(() -> new ChecklistNotFoundException(checklistId));
+        this.taskRepository.deleteAll(checklist.getTasks());
+        this.checklistRepository.delete(checklist);
+        return true;
     }
 
     private double calculateCompletedPercent(final Checklist checklist) {

@@ -5,14 +5,14 @@ import com.sera.todo.domain.enumeration.TaskCategory;
 import lombok.Getter;
 
 @Getter
-public class TaskCreateRequest {
+public class TaskUpdateRequest {
 
-    @JsonProperty(value = "checklist_id")
-    private Long checklistId;
+    @JsonProperty(value = "task_id", required = true)
+    private Long taskId;
 
-    @JsonProperty(value = "name", required = true)
+    @JsonProperty(value = "name")
     private String name;
 
-    @JsonProperty(value = "category", required = true)
+    @JsonProperty(value = "category")
     private TaskCategory category;
 }

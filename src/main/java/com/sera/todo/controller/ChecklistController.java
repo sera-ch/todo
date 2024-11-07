@@ -33,4 +33,9 @@ public class ChecklistController {
     public ResponseEntity<ChecklistResponse> createChecklist(@AdminPermission @RequestHeader(value = "token") final String token, @RequestBody final ChecklistCreateRequest request) {
         return ResponseEntity.ok(new ChecklistResponse(this.checklistService.create(request)));
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Boolean> deleteChecklist(@AdminPermission @RequestHeader(value = "token") final String token, @PathVariable(value = "id") final Long checklistId) {
+        return ResponseEntity.ok(this.checklistService.delete(checklistId));
+    }
 }

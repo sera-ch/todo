@@ -3,6 +3,7 @@ package com.sera.todo.service;
 import com.sera.todo.common.EncryptionUtil;
 import com.sera.todo.common.config.TodoProperties;
 import com.sera.todo.common.validator.PasswordValidator;
+import com.sera.todo.controller.dto.request.UserChangePasswordRequest;
 import com.sera.todo.domain.entity.User;
 import com.sera.todo.domain.entity.error.InvalidLoginException;
 import com.sera.todo.domain.entity.error.UserAlreadyExistsException;
@@ -55,5 +56,18 @@ public class UserService {
         }
         user.updateToken(UUID.randomUUID().toString());
         return this.userRepository.save(user);
+    }
+
+    public User changePassword(UserChangePasswordRequest request) {
+        PasswordValidator.validatePassword(request.getNewPassword(), request.getRepeatNewPassword());
+        User user = this.userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UserNotFoundException(request.getUsername()));
+        final String decryptedPassword = EncryptionUtil.decrypt(user.getPassword(), properties.getSecretKey(), properties.getSalt());
+        if (!decryptedPassword.equals(request.getOldPassword())) {
+            throw new InvalidLoginException(request.getUsername());
+        }
+        if (!decryptedPassword.equals(request.getNewPassword())) {
+            user.setPassword(EncryptionUtil.encrypt(request.getNewPassword(), properties.getSecretKey(), properties.getSalt()));
+        }
+        return user;
     }
 }

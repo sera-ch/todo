@@ -37,6 +37,12 @@ public class GlobalExceptionHandler {
                 new TaskNotFoundExceptionResponse(exception.getTaskId()));
     }
 
+    @ExceptionHandler(ChecklistNotFoundException.class)
+    public ResponseEntity<ChecklistNotFoundExceptionResponse> handleChecklistNotFoundException(final ChecklistNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ChecklistNotFoundExceptionResponse(exception.getChecklistId()));
+    }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<UserAlreadyExistsExceptionResponse> handleUserAlreadyExistsException(final UserAlreadyExistsException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(

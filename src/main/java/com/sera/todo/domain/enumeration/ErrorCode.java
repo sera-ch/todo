@@ -1,6 +1,7 @@
 package com.sera.todo.domain.enumeration;
 
 import lombok.Getter;
+import org.hibernate.JDBCException;
 
 @Getter
 public enum ErrorCode {
@@ -13,6 +14,9 @@ public enum ErrorCode {
     USER_NOT_FOUND("USR000", "User not found"),
     USER_ALREADY_EXISTS("USR001", "User already exists"),
 
+    // Checklists
+    CHECKLIST_NOT_FOUND("CHL000", "Checklist not found"),
+
     // Tasks
     TASK_NOT_FOUND("TSK000", "Task not found"),
 
@@ -23,7 +27,6 @@ public enum ErrorCode {
     ENCODING_FAILED("MSC000", "Encoding failed"),
 
     ;
-
     private String errorCode;
     private String errorMessage;
 
