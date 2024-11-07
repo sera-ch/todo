@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/checklists")
 @Validated
+@CrossOrigin
 public class ChecklistController {
 
     private final ChecklistService checklistService;
