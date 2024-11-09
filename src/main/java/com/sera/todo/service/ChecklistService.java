@@ -1,6 +1,7 @@
 package com.sera.todo.service;
 
 import com.sera.todo.controller.dto.request.ChecklistCreateRequest;
+import com.sera.todo.controller.dto.request.ChecklistUpdateRequest;
 import com.sera.todo.controller.dto.request.TaskUpdateStatusRequest;
 import com.sera.todo.domain.entity.Checklist;
 import com.sera.todo.domain.entity.Task;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,9 +59,16 @@ public class ChecklistService {
         return true;
     }
 
+    public Checklist update(final long checklistId, final ChecklistUpdateRequest request) {
+        final Checklist checklist = this.checklistRepository.findById(checklistId).orElseThrow(() -> new ChecklistNotFoundException(checklistId));
+        checklist.getTasks().forEach(task -> task.setCompleted(request.getTasks().stream().filter(t -> t.getTaskId() == task.getId()).findFirst().get().getCompleted()));
+        checklist.setCompletedPercent(this.calculateCompletedPercent(checklist));
+        return checklist;
+    }
+
     private double calculateCompletedPercent(final Checklist checklist) {
         final List<Task> tasks = checklist.getTasks();
-        final double completed = tasks.stream().filter(Task::isCompleted).count();
-        return completed * 100 / tasks.size();
+        final long completed = tasks.stream().filter(Task::isCompleted).count();
+        return Math.floorDiv(completed * 100, tasks.size());
     }
 }
