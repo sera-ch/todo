@@ -15,8 +15,12 @@ public class TaskUpdateStatusResponse {
     private Long id;
     private boolean completed;
 
+    @JsonProperty("completed_percent")
+    private Double completedPercent;
+
     public TaskUpdateStatusResponse(final Task task) {
         this.id = task.getId();
         this.completed = task.isCompleted();
+        this.completedPercent = task.getChecklist().getCompletedPercent();
     }
 }
