@@ -6,6 +6,7 @@ import com.sera.todo.controller.dto.response.TaskResponse;
 import com.sera.todo.controller.dto.response.TaskUpdateStatusResponse;
 import com.sera.todo.controller.dto.response.UserResponse;
 import com.sera.todo.domain.entity.User;
+import com.sera.todo.domain.enumeration.TaskCategory;
 import com.sera.todo.service.ChecklistService;
 import com.sera.todo.service.TaskService;
 import com.sera.todo.service.UserService;
@@ -14,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,5 +53,10 @@ public class TaskController {
                                                @PathVariable(value = "id") final Long taskId,
                                                @RequestBody final TaskUpdateRequest request) {
         return ResponseEntity.ok(new TaskResponse(this.taskService.update(request)));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<TaskCategory>> getCategories() {
+        return ResponseEntity.ok(Arrays.stream(TaskCategory.values()).toList());
     }
 }
