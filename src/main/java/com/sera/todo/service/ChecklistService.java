@@ -1,5 +1,6 @@
 package com.sera.todo.service;
 
+import com.sera.todo.common.Calculator;
 import com.sera.todo.controller.dto.request.ChecklistCreateRequest;
 import com.sera.todo.controller.dto.request.ChecklistUpdateRequest;
 import com.sera.todo.controller.dto.request.TaskUpdateStatusRequest;
@@ -48,7 +49,7 @@ public class ChecklistService {
         }
         task.setCompleted(completed);
         final Checklist checklist = task.getChecklist();
-        checklist.setCompletedPercent(this.calculateCompletedPercent(checklist));
+        checklist.setCompletedPercent(Calculator.calculateCompletedPercent(checklist));
         return task;
     }
 
@@ -62,13 +63,7 @@ public class ChecklistService {
     public Checklist update(final long checklistId, final ChecklistUpdateRequest request) {
         final Checklist checklist = this.checklistRepository.findById(checklistId).orElseThrow(() -> new ChecklistNotFoundException(checklistId));
         checklist.getTasks().forEach(task -> task.setCompleted(request.getTasks().stream().filter(t -> t.getTaskId() == task.getId()).findFirst().get().getCompleted()));
-        checklist.setCompletedPercent(this.calculateCompletedPercent(checklist));
+        checklist.setCompletedPercent(Calculator.calculateCompletedPercent(checklist));
         return checklist;
-    }
-
-    private double calculateCompletedPercent(final Checklist checklist) {
-        final List<Task> tasks = checklist.getTasks();
-        final long completed = tasks.stream().filter(Task::isCompleted).count();
-        return Math.floorDiv(completed * 100, tasks.size());
     }
 }
