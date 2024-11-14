@@ -56,4 +56,11 @@ public class GlobalExceptionHandler {
                 new UserNotFoundExceptionResponse(exception.getUsernameOrToken())
         );
     }
+
+    @ExceptionHandler(TaskAlreadyExistsInSameChecklistException.class)
+    public ResponseEntity<TaskAlreadyExistsInSameChecklistExceptionResponse> handleUserNotFoundException(final TaskAlreadyExistsInSameChecklistException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new TaskAlreadyExistsInSameChecklistExceptionResponse(exception.getChecklistId(), exception.getTaskName())
+        );
+    }
 }

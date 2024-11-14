@@ -2,6 +2,7 @@ package com.sera.todo.controller;
 
 import com.sera.todo.common.annotation.AdminPermission;
 import com.sera.todo.controller.dto.request.*;
+import com.sera.todo.controller.dto.response.ChecklistResponse;
 import com.sera.todo.controller.dto.response.TaskResponse;
 import com.sera.todo.controller.dto.response.TaskUpdateStatusResponse;
 import com.sera.todo.controller.dto.response.UserResponse;
@@ -37,9 +38,9 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<TaskResponse> create(@AdminPermission @RequestHeader("token") final String token,
-                                               @RequestBody final TaskCreateRequest request) {
-        return ResponseEntity.ok(new TaskResponse(this.taskService.create(request)));
+    public ResponseEntity<ChecklistResponse> create(@AdminPermission @RequestHeader("token") final String token,
+                                                    @RequestBody final TaskCreateRequest request) {
+        return ResponseEntity.ok(new ChecklistResponse(this.taskService.create(request).getChecklist()));
     }
 
     @DeleteMapping("/{id}")

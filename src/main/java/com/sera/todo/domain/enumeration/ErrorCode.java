@@ -20,12 +20,13 @@ public enum ErrorCode {
     // Tasks
     TASK_NOT_FOUND("TSK000", "Task not found"),
 
+    TASK_ALREADY_EXISTS_IN_SAME_CHECKLIST("TSK001", "Task already exists with same name in same checklist"),
+
     // Validation
     INVALID_PASSWORD("PWD000", "Invalid password"),
 
     // Miscellaneous
     ENCODING_FAILED("MSC000", "Encoding failed"),
-
     ;
     private String errorCode;
     private String errorMessage;

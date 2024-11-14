@@ -2,10 +2,10 @@ package com.sera.todo.service;
 
 import com.sera.todo.controller.dto.request.TaskCreateRequest;
 import com.sera.todo.controller.dto.request.TaskUpdateRequest;
-import com.sera.todo.controller.dto.request.TaskUpdateStatusRequest;
 import com.sera.todo.domain.entity.Checklist;
 import com.sera.todo.domain.entity.Task;
 import com.sera.todo.domain.entity.error.ChecklistNotFoundException;
+import com.sera.todo.domain.entity.error.TaskAlreadyExistsInSameChecklistException;
 import com.sera.todo.domain.entity.error.TaskNotFoundException;
 import com.sera.todo.domain.repository.ChecklistRepository;
 import com.sera.todo.domain.repository.TaskRepository;
@@ -41,12 +41,18 @@ public class TaskService {
     public Task create(TaskCreateRequest request) {
         final Checklist checklist = this.checklistRepository.findById(request.getChecklistId())
                 .orElseThrow(() -> new ChecklistNotFoundException(request.getChecklistId()));
-        return this.taskRepository.save(Task.builder()
+        if (checklist.getTasks().stream().anyMatch(task ->  task.getName().equals(request.getName()))) {
+            throw new TaskAlreadyExistsInSameChecklistException(request.getChecklistId(), request.getName());
+        }
+        final Task newTask = Task.builder()
                 .name(request.getName())
                 .category(request.getCategory())
                 .checklist(checklist)
                 .completed(false)
-                .build());
+                .build();
+        checklist.getTasks().add(newTask);
+        newTask.setChecklist(checklist);
+        return this.taskRepository.save(newTask);
     }
 
     public boolean delete(Long taskId) {
