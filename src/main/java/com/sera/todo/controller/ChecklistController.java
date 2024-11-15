@@ -5,12 +5,16 @@ import com.sera.todo.controller.dto.request.ChecklistCreateRequest;
 import com.sera.todo.controller.dto.request.ChecklistUpdateRequest;
 import com.sera.todo.controller.dto.response.ChecklistResponse;
 import com.sera.todo.controller.dto.response.GetAllChecklistsResponse;
+import com.sera.todo.domain.enumeration.ChecklistCategory;
 import com.sera.todo.service.ChecklistService;
 import com.sera.todo.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,5 +48,10 @@ public class ChecklistController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Boolean> deleteChecklist(@AdminPermission @RequestHeader(value = "token") final String token, @PathVariable(value = "id") final Long checklistId) {
         return ResponseEntity.ok(this.checklistService.delete(checklistId));
+    }
+
+    @GetMapping(value = "/categories")
+    public ResponseEntity<List<ChecklistCategory>> getCategories() {
+        return ResponseEntity.ok(Arrays.stream(ChecklistCategory.values()).toList());
     }
 }
