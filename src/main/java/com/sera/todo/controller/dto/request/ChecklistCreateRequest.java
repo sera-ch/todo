@@ -15,6 +15,6 @@ public class ChecklistCreateRequest {
     @JsonProperty(value = "category", required = true)
     private ChecklistCategory category;
 
-    @JsonProperty(value = "tasks", required = true)
+    @JsonProperty(value = "tasks")
     private List<TaskCreateRequest> tasks;
 }

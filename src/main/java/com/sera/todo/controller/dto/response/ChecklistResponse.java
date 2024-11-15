@@ -7,6 +7,8 @@ import com.sera.todo.domain.enumeration.ChecklistCategory;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -25,7 +27,8 @@ public class ChecklistResponse {
         this.id = checklist.getId();
         this.name = checklist.getName();
         this.category = checklist.getCategory();
-        this.tasks = checklist.getTasks().stream().map(TaskResponse::new).toList();
+        List<Task> taskList = checklist.getTasks();
+        this.tasks = taskList.isEmpty() ? Collections.emptyList() : taskList.stream().map(TaskResponse::new).toList();
         this.completedPercent = checklist.getCompletedPercent();
     }
 }

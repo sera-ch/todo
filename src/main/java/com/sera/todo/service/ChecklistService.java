@@ -35,7 +35,9 @@ public class ChecklistService {
                 .category(request.getCategory())
                 .completedPercent(0)
                 .build());
-        newChecklist.setTasks(this.taskService.create(request.getTasks(), newChecklist));
+        if (request.getTasks() != null || !request.getTasks().isEmpty()) {
+            newChecklist.setTasks(this.taskService.create(request.getTasks(), newChecklist));
+        }
         return newChecklist;
     }
 
