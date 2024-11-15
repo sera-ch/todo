@@ -1,6 +1,7 @@
 package com.sera.todo.controller;
 
 import com.sera.todo.common.annotation.AdminPermission;
+import com.sera.todo.common.annotation.UserPermission;
 import com.sera.todo.controller.dto.request.*;
 import com.sera.todo.controller.dto.response.ChecklistResponse;
 import com.sera.todo.controller.dto.response.TaskResponse;
@@ -31,7 +32,7 @@ public class TaskController {
     private final ChecklistService checklistService;
 
     @PutMapping("/{id}/update-status")
-    public ResponseEntity<TaskUpdateStatusResponse> updateTaskStatus(@AdminPermission @RequestHeader("token") final String token,
+    public ResponseEntity<TaskUpdateStatusResponse> updateTaskStatus(@UserPermission @RequestHeader("token") final String token,
                                                                      @PathVariable("id") final Long taskId,
                                                                      @RequestBody final TaskUpdateStatusRequest request) {
         return ResponseEntity.ok(new TaskUpdateStatusResponse(this.checklistService.updateStatus(taskId, request.getCompleted())));
