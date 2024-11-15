@@ -5,17 +5,23 @@ import com.sera.todo.controller.dto.request.UserChangePasswordRequest;
 import com.sera.todo.controller.dto.request.UserLoginRequest;
 import com.sera.todo.controller.dto.request.UserRegisterRequest;
 import com.sera.todo.controller.dto.response.UserChangePasswordResponse;
+import com.sera.todo.controller.dto.response.UserListResponse;
 import com.sera.todo.controller.dto.response.UserResponse;
 import com.sera.todo.domain.entity.User;
 import com.sera.todo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 @CrossOrigin
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -23,7 +29,23 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody final UserLoginRequest request) {
         final User user = this.userService.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(UserResponse.builder().token(user.getToken()).role(user.getRole()).build());
+        return ResponseEntity.ok(UserResponse.builder().username(user.getUsername()).token(user.getToken()).role(user.getRole()).build());
+    }
+
+    @GetMapping
+    public ResponseEntity<UserListResponse> getUsers(@AdminPermission @RequestHeader(value = "token") final String token) {
+        final List<User> users = this.userService.findAll();
+        if (users.isEmpty()) {
+            return ResponseEntity.ok(UserListResponse.builder().users(Collections.emptyList()).build());
+        }
+        return ResponseEntity.ok(UserListResponse.builder().users(users.stream().map(user ->
+                UserResponse.builder()
+                        .username(user.getUsername())
+                        .token(user.getToken())
+                        .role(user.getRole())
+                        .build())
+                .toList())
+                .build());
     }
 
     @PostMapping("/register")

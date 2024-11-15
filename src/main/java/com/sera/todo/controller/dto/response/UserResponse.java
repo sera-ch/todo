@@ -8,5 +8,6 @@ import lombok.Getter;
 @Builder
 public class UserResponse {
     private String token;
+    private String username;
     private UserRole role;
 }
