@@ -40,9 +40,11 @@ public class ChecklistController {
         return ResponseEntity.ok(new ChecklistResponse(this.checklistService.create(request)));
     }
 
-    @PutMapping(value="/{id}/tasks")
-    public ResponseEntity<ChecklistResponse> updateChecklist(@AdminPermission @RequestHeader(value = "token") final String token, @PathVariable(value = "id") final Long checklistId, @RequestBody final ChecklistUpdateRequest request) {
-        return ResponseEntity.ok(new ChecklistResponse(this.checklistService.update(checklistId, request)));
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ChecklistResponse> update(@AdminPermission @RequestHeader(value = "token") final String token,
+                                                    @PathVariable(value = "id") final Long id,
+                                                    @RequestBody final ChecklistUpdateRequest request) {
+        return ResponseEntity.ok(new ChecklistResponse(this.checklistService.update(id, request)));
     }
 
     @DeleteMapping(value = "/{id}")

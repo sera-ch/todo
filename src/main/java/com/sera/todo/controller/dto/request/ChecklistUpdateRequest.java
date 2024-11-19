@@ -8,6 +8,13 @@ import java.util.List;
 
 @Getter
 public class ChecklistUpdateRequest {
-    @JsonProperty(value = "tasks", required = true)
+
+    @JsonProperty(value = "name")
+    private String checklistName;
+
+    @JsonProperty(value = "category")
+    private ChecklistCategory category;
+
+    @JsonProperty(value = "tasks")
     private List<TaskUpdateStatusRequest> tasks;
 }

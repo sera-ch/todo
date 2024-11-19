@@ -61,7 +61,11 @@ public class ChecklistService {
 
     public Checklist update(final long checklistId, final ChecklistUpdateRequest request) {
         final Checklist checklist = this.checklistRepository.findById(checklistId).orElseThrow(() -> new ChecklistNotFoundException(checklistId));
-        checklist.getTasks().forEach(task -> task.setCompleted(request.getTasks().stream().filter(t -> t.getTaskId() == task.getId()).findFirst().get().getCompleted()));
+        checklist.setName(request.getChecklistName());
+        checklist.setCategory(request.getCategory());
+        if (request.getTasks() != null && request.getTasks().size() > 0) {
+            checklist.getTasks().forEach(task -> task.setCompleted(request.getTasks().stream().filter(t -> t.getTaskId() == task.getId()).findFirst().get().getCompleted()));
+        }
         checklist.setCompletedPercent(Calculator.calculateCompletedPercent(checklist));
         return checklist;
     }
