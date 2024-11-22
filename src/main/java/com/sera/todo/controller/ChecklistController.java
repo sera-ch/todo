@@ -2,6 +2,7 @@ package com.sera.todo.controller;
 
 import com.sera.todo.common.annotation.AdminPermission;
 import com.sera.todo.controller.dto.request.ChecklistCreateRequest;
+import com.sera.todo.controller.dto.request.ChecklistFavoriteRequest;
 import com.sera.todo.controller.dto.request.ChecklistUpdateRequest;
 import com.sera.todo.controller.dto.response.ChecklistResponse;
 import com.sera.todo.controller.dto.response.GetAllChecklistsResponse;
@@ -30,7 +31,8 @@ public class ChecklistController {
     public ResponseEntity<GetAllChecklistsResponse> findAllChecklists() {
         return ResponseEntity.ok(GetAllChecklistsResponse.builder()
                 .checklists(this.checklistService.findAll()
-                        .stream().map(ChecklistResponse::new)
+                        .stream()
+                        .map(ChecklistResponse::new)
                 .toList())
                 .build());
     }
@@ -45,6 +47,11 @@ public class ChecklistController {
                                                     @PathVariable(value = "id") final Long id,
                                                     @RequestBody final ChecklistUpdateRequest request) {
         return ResponseEntity.ok(new ChecklistResponse(this.checklistService.update(id, request)));
+    }
+
+    @PutMapping(value = "/{id}/favorite")
+    public ResponseEntity<ChecklistResponse> favorite(@PathVariable(value = "id") final Long id, @RequestBody final ChecklistFavoriteRequest request) {
+        return ResponseEntity.ok(new ChecklistResponse(this.checklistService.updateFavorite(id, request.isFavorite())));
     }
 
     @DeleteMapping(value = "/{id}")

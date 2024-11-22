@@ -23,6 +23,9 @@ public class ChecklistResponse {
 
     private List<TaskResponse> tasks;
 
+    @JsonProperty("is_favorite")
+    private Boolean isFavorite;
+
     public ChecklistResponse(final Checklist checklist) {
         this.id = checklist.getId();
         this.name = checklist.getName();
@@ -30,5 +33,6 @@ public class ChecklistResponse {
         List<Task> taskList = checklist.getTasks();
         this.tasks = taskList.isEmpty() ? Collections.emptyList() : taskList.stream().map(TaskResponse::new).toList();
         this.completedPercent = checklist.getCompletedPercent();
+        this.isFavorite = checklist.isFavorite();
     }
 }

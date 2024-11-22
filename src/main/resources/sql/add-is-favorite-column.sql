@@ -1,0 +1,1 @@
+ALTER TABLE `Checklist` ADD COLUMN `is_favorite` BIT DEFAULT FALSE;

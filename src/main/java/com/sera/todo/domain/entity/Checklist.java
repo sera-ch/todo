@@ -31,4 +31,7 @@ public class Checklist {
     @OneToMany(mappedBy = "checklist",cascade = CascadeType.ALL,orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Task> tasks;
+
+    @Column(name = "is_favorite")
+    private boolean isFavorite;
 }

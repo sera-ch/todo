@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -25,8 +27,23 @@ public class ChecklistService {
     private final TaskRepository taskRepository;
     private final TaskService taskService;
 
+    private static final Comparator<Checklist> FAVORITE_COMPARATOR = new Comparator<Checklist>() {
+        @Override
+        public int compare(Checklist c1, Checklist c2) {
+            if (c1.isFavorite() && !c2.isFavorite()) {
+                return -1;
+            }
+            if (!c1.isFavorite() && c2.isFavorite()) {
+                return 1;
+            }
+            return 0;
+        }
+    };
+
     public List<Checklist> findAll() {
-        return checklistRepository.findAll();
+        List<Checklist> result = checklistRepository.findAll();
+        result.sort(FAVORITE_COMPARATOR);
+        return result;
     }
 
     public Checklist create(final ChecklistCreateRequest request) {
@@ -34,6 +51,7 @@ public class ChecklistService {
                 .name(request.getName())
                 .category(request.getCategory())
                 .completedPercent(0)
+                .isFavorite(request.getIsFavorite() != null && request.getIsFavorite())
                 .build());
         if (request.getTasks() != null || !request.getTasks().isEmpty()) {
             newChecklist.setTasks(this.taskService.create(request.getTasks(), newChecklist));
@@ -61,12 +79,25 @@ public class ChecklistService {
 
     public Checklist update(final long checklistId, final ChecklistUpdateRequest request) {
         final Checklist checklist = this.checklistRepository.findById(checklistId).orElseThrow(() -> new ChecklistNotFoundException(checklistId));
-        checklist.setName(request.getChecklistName());
-        checklist.setCategory(request.getCategory());
+        if (request.getChecklistName() != null) {
+            checklist.setName(request.getChecklistName());
+        }
+        if (request.getCategory() != null) {
+            checklist.setCategory(request.getCategory());
+        }
+        if (request.getIsFavorite() != null) {
+            checklist.setFavorite(request.getIsFavorite());
+        }
         if (request.getTasks() != null && request.getTasks().size() > 0) {
             checklist.getTasks().forEach(task -> task.setCompleted(request.getTasks().stream().filter(t -> t.getTaskId() == task.getId()).findFirst().get().getCompleted()));
         }
         checklist.setCompletedPercent(Calculator.calculateCompletedPercent(checklist));
         return checklist;
+    }
+
+    public Checklist updateFavorite(final long checklistId, final boolean isFavorite) {
+        final Checklist checklist = this.checklistRepository.findById(checklistId).orElseThrow(() -> new ChecklistNotFoundException(checklistId));
+        checklist.setFavorite(isFavorite);
+        return this.checklistRepository.save(checklist);
     }
 }

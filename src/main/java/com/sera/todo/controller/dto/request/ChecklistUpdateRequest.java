@@ -17,4 +17,7 @@ public class ChecklistUpdateRequest {
 
     @JsonProperty(value = "tasks")
     private List<TaskUpdateStatusRequest> tasks;
+
+    @JsonProperty(value = "is_favorite")
+    private Boolean isFavorite;
 }
